@@ -192,7 +192,60 @@
 
 - `/dev`
 
+## Permissions
 
+**_31.How to change the permissions of a file?_**
 
+- Using the `chmod` command.
 
+**_32.What does the following permissions mean?:_**
 
+- `777` -> You give the owner, group and other: Execute (1), Write (2) and Read (4); 4+2+1 = 7.
+- `644` -> Owner has Read (4), Write (2), 4+2 = 6; Group and Other have Read (4).
+- `750` -> Owner has x+r+w, Group has Read (4) and Execute (1); 4+1 = 5. Other have no permissions.
+
+**_33.What this command does? `chmod +x some_file`_**
+
+- It adds execute permissions to all sets i.e user, group and others.
+
+**_34.Explain what is setgid and setuid_**
+
+- `setuid` is a linux file permission that permits a user to run a file or program with the permissions of the owner of that file. This is possible by elevation of current user privileges.
+
+- `setgid` is a process when executed will run as the group that owns the file.
+
+**_35.What is the purpose of sticky bit?_**
+
+- Its a bit that only allows the owner or the root user to delete or modify the file.
+
+**_36.What the following commands do?__**
+
+- `chmod` - changes access permissions to files system objects
+- `chown` - changes the owner of file system files and directories
+- `chgrp` - changes the group associated with a file system object
+
+**_37.What is sudo? How do you set it up?_**
+
+- sudo is a command-line utility in Unix-like operating systems that allows users to run programs with the privileges of another user, usually the superuser (root). It stands for "superuser do.
+
+- The sudo program is installed by default in almost all Linux distributions. If you need to install sudo in Debian/Ubuntu, use the command apt-get install sudo
+
+**_38.True or False? In order to install packages on the system one must be the root user or use the sudo command_**
+
+- True
+
+**_39.Explain what are ACLs. For what use cases would you recommend to use them?_**
+
+- An Access Control List (ACL) is a set of rules that determines which users or systems are granted or denied access to a specific resource, such as a file, directory, or network.
+
+- They are used to enforce granular security policies, and recommended use cases include managing file and directory permissions, controlling network traffic, and securing API access. 
+
+**_40.You try to create a file but it fails. Name at least three different reason as to why it could happen_**
+
+- No more disk space
+- No more inodes
+- No permissions
+
+**_41.A user accidentally executed the following `chmod -x $(which chmod)`. How to fix it?_**
+
+Using `sudo setfacl -m u::rx /usr/bin/chmod` will set the execute permissions on `chmod` for all the users. Post this, the `chmod` binary can be used as usual.
