@@ -306,8 +306,91 @@
   - [Install]
   - WantedBy=multi-user.target
 
+## Troubleshooting and Debugging
 
+**_50.Where system logs are located?_**
 
+- `/var/log`
+
+**_51.How to follow file's content as it being appended without opening the file every time?_**
+
+- `tail -f <file_name>`
+
+**_52.What are you using for troubleshooting and debugging network issues?_**
+
+- `dstat -t` is great for identifying network and disk issues. 
+- `netstat -tnlaup` can be used to see which processes are running on which ports.
+- `lsof -i -P` can be used for the same purpose as netstat.
+- `ngrep -d any metafilter` for matching regex against payloads of packets.
+- `tcpdump` for capturing packets.
+- `wireshark` same concept as tcpdump but with GUI (optional).
+
+**_53.What are you using for troubleshooting and debugging disk & file system issues?_**
+
+- `dstat -t` is great for identifying network and disk issues.
+- `opensnoop` can be used to see which files are being opened on the system (in real time).
+
+**_54.What are you using for troubleshooting and debugging process issues?_**
+
+- `strace` is great for understanding what your program does. It prints every system call your program executed.
+
+**_55.What are you using for debugging CPU related issues?_**
+
+- `top` will show you how much CPU percentage each process consumes
+- `perf` is a great choice for sampling profiler and in general, figuring out what your CPU cycles are "wasted" on `flamegraphs` is great for CPU consumption visualization
+
+**_56.You get a call from someone claiming "my system is SLOW". What do you do?_**
+
+- Check with `top` for anything unusual
+- Run `dstat -t` to check if it's related to disk or network.
+- Check if it's network related with `sar`
+- Check I/O stats with `iostat`
+
+**_57.Explain iostat output_**
+
+- The `iostat` command in Linux provides input/output statistics for devices and CPU utilization.
+
+**_58.How to debug binaries?_**
+
+- 1.Using GDB for Interactive Debugging
+  - Start GDB
+  - Set Breakpoints
+  - Run the program
+  - Step through code
+  - Inspect variables
+  - Examine memory
+  - Continue execution
+  - Quit GDB
+  - Attaching to a Running Process
+     
+- 2.Utilizing Other Binary Analysis Tools
+  - `strace`
+  - `ltrace`
+  - `readelf`
+  - `objdump`
+  - `ldd`
+  - `strings`
+
+- 3.Handling Missing Debugging Symbols
+
+- 4.Remote Debugging
+ 
+- 5.IDEs  
+
+**_59.What is the difference between CPU load and utilization?_**
+
+- CPU utilization is the percentage of time a CPU is actively busy, while CPU load is the number of processes either actively using the CPU or waiting to use it.
+
+**_60.How you measure time execution of a program?_**
+
+- `time` command
+
+### Scenario
+
+**_61.You have a process writing to a file. You don't know which process exactly, you just know the path of the file. You would like to kill the process as it's no longer needed. How would you achieve it?_**
+
+- Run `lsof <FILE_PATH>`
+- Use the pid (process ID) from the lsof command and run `kill <PID>`
 
 
 
