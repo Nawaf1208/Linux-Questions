@@ -249,3 +249,21 @@
 **_41.A user accidentally executed the following `chmod -x $(which chmod)`. How to fix it?_**
 
 - Using `sudo setfacl -m u::rx /usr/bin/chmod` will set the execute permissions on `chmod` for all the users. Post this, the `chmod` binary can be used as usual.
+
+## Scenarios
+
+**_42.You would like to copy a file to a remote Linux host. How would you do?_**
+
+- There are multiple ways to transfer files between hosts. Personal opinion: use `rsync`
+
+**_43.How to generate a random string?_**
+
+- One way is to run the following: `cat /proc/sys/kernel/random/uuid`
+
+**_44.How to generate a random string of 7 characters?_**
+
+- `mkpasswd -l 7`
+
+
+
+
