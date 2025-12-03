@@ -154,5 +154,45 @@
 - The file `die_hard` will not be created
 
 
+## Filesystem Hierarchy Standard
+
+**_23.In Linux FHS (Filesystem Hierarchy Standard) what is the `/`?_**
+
+- The root of the filesystem. The beginning of the tree.
+
+**_24.What is stored in each of the following paths?_**
+
+- `/bin, /sbin, /usr/bin and /usr/sbin` -> binaries
+- `/etc` -> configuration files
+- `/home` -> home directories of the different users
+- `/var` -> files that tend to change and be modified like logs
+- `/tmp` -> temporary files
+
+**_25.What is special about the /tmp directory when compared to other directories?_**
+
+- `/tmp` folder is cleaned automatically, usually upon reboot.
+
+**_26.What kind of information one can find in /proc?_**
+
+- It contains useful information about the processes that are currently running, it is regarded as control and information center for kernel.
+
+**_27.What makes /proc different from other filesystems?_**
+
+- `/proc` is a special virtual filesystem in Unix-like operating systems, including Linux, that provides information about processes and system resources.
+
+**_28.True or False? only root can create files in /proc_**
+
+- False. No one can create file in `/proc` directly (certain operations can lead to files being created in /proc by the kernel).
+
+**_29.What can be found in /proc/cmdline?_**
+
+- The command passed to the boot loader to run the kernel
+
+**_30.In which path can you find the system devices (e.g. block storage)?_**
+
+- `/dev`
+
+
+
 
 
