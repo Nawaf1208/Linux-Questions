@@ -248,4 +248,4 @@
 
 **_41.A user accidentally executed the following `chmod -x $(which chmod)`. How to fix it?_**
 
-Using `sudo setfacl -m u::rx /usr/bin/chmod` will set the execute permissions on `chmod` for all the users. Post this, the `chmod` binary can be used as usual.
+- Using `sudo setfacl -m u::rx /usr/bin/chmod` will set the execute permissions on `chmod` for all the users. Post this, the `chmod` binary can be used as usual.
