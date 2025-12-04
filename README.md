@@ -218,7 +218,7 @@
 
 - Its a bit that only allows the owner or the root user to delete or modify the file.
 
-**_36.What the following commands do?__**
+**_36.What the following commands do?_**
 
 - `chmod` - changes access permissions to files system objects
 - `chown` - changes the owner of file system files and directories
