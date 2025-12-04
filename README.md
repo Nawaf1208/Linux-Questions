@@ -615,3 +615,127 @@
 **_96.What can you find in /boot?_**
 
 - The `/boot` directory in Linux contains the essential, static files required to start the system. The contents of this directory are read by the bootloader (like GRUB2) before the main operating system's configuration files in `/etc` are accessed.
+
+## Disk and Filesystem
+
+**_97.What's an inode?_**
+
+- For each file (and directory) in Linux there is an inode, a data structure which stores meta data related to the file like its size, owner, permissions, etc.
+
+**_98.Which of the following is not included in inode:_**
+- **_Link count_**
+- **_File size_**
+- **_File name_**
+- **_File timestamp_**
+
+- File name (it's part of the directory file)
+
+**_99.How to check which disks are currently mounted?_**
+
+- Run `mount`
+
+**_100.You run the `mount` command but you get no output. How would you check what mounts you have on your system?_**
+
+- `cat /proc/mounts`
+
+**_101.What is the difference between a soft link and hard link?_**
+
+- Hard link is the same file, using the same inode. Soft link is a shortcut to another file, using a different inode.
+
+**_102.True or False? You can create an hard link for a directory_**
+
+- False
+
+**_103.True or False? You can create a soft link between different filesystems_**
+
+- True
+
+**_104.True or False? Directories always have by minimum 2 links_**
+
+- True
+
+**_105.What happens when you delete the original file in case of soft link and hard link?_**
+
+- When the original file is deleted, a soft link breaks because it merely points to the file's path, while a hard link remains fully functional because it acts as an alternative name pointing directly to the data on the disk. The data is only truly deleted when the last hard link referencing it is removed.
+
+**_106.Can you check what type of filesystem is used in /home?_**
+
+- There are many answers for this question. One way is running `df -T`
+
+**_107.What is a swap partition? What is it used for?_**
+
+- A swap partition is a dedicated area on a Linux storage drive that the operating system uses as virtual memory when the physical RAM is full. The kernel moves inactive data from RAM to this slower disk space to free up memory for active applications, or to write the entire system state to disk during hibernation.
+
+**_108.How to create a_**
+- **_new empty file_** -> `touch new_file.txt`
+- **_a file with text (without using text editor)_** -> `
+cat > new_file [enter] submit text; ctrl + d to exit insert mode`
+- **_a file with given size_** -> `truncate -s new_file.txt`
+
+**_109.You are trying to create a new file but you get "File system is full". You check with df for free space and you see you used only 20% of the space. What could be the problem?_**
+
+- When you receive a "File system is full" error but df indicates plenty of free disk space, the problem is typically caused by exhausting all available inodes. In Linux filesystems, an inode is a metadata structure assigned to every file, storing information like ownership, permissions, and location on the disk, but not the file's actual data.
+- While df reports on the usage of data blocks (the file content space), it doesn't always highlight inode usage. If a system has millions of extremely tiny files (e.g., temporary web cache files or session data), every single one consumes an inode. Once all inodes allocated for that specific partition are used up, the system cannot create any new files, regardless of how much physical storage space remains empty.
+
+**_110.How would you check what is the size of a certain directory?_**
+
+- `du -sh`
+
+**_111.What is LVM?_**
+
+- LVM (Logical Volume Management) is a powerful, flexible storage management system for Linux that provides an abstraction layer between the physical storage devices (hard disks, SSDs) and the filesystem partitions used by the operating system.
+
+**_112.Explain the following in regards to LVM:_**
+  - **_PV_** - A Physical Volume (PV) is the foundational layer of LVM. It is an actual, physical storage device or partition that has been initialized for use by LVM.
+
+  - **_VG_** - A Volume Group (VG) is the next layer up. It is a unified pool of storage space created by combining one or more Physical Volumes.
+
+  - **_LV_** - A Logical Volume (LV) is a "virtual partition" carved out from the storage pool provided by a Volume Group. This is the final layer that the operating system interacts with.
+
+**_112.What is NFS? What is it used for?_**
+
+- NFS (Network File System) is a distributed filesystem protocol in Linux that allows a user to access files and directories on a remote computer over a network as if they were stored locally on their own machine. 
+
+**_113.What RAID is used for? Can you explain the differences between RAID 0, 1, 5 and 10?_**
+
+- RAID (Redundant Array of Independent Disks) is a storage technology used in Linux and other operating systems that combines multiple physical disk drives into a single logical unit. Its primary purposes are to improve performance (speed), provide data redundancy (fault tolerance), or both. This allows administrators to optimize storage for specific needs, ranging from high-speed temporary storage to mission-critical, highly reliable data storage.
+
+- The primary differences lie in how data is distributed and protected:
+  - RAID 0 (Striping) offers the fastest performance by splitting data across drives, but provides no data protection if a single drive fails.
+  - RAID 1 (Mirroring) provides maximum safety by duplicating all data across drives, but halves the usable storage capacity and offers no performance benefit for writing.
+  - RAID 5 balances performance and safety by using striping with a parity scheme, allowing for a single drive failure tolerance with minimal capacity overhead (requiring at least three drives).
+  - RAID 10 (Striping and Mirroring) provides the best of both worlds—high performance and high fault tolerance—by combining mirrored pairs into a striped array, though at the cost of 50% usable capacity (requiring at least four drives).
+
+**_114.Describe the process of extending a filesystem disk space_**
+
+- Extending a filesystem's disk space in Linux involves several steps that must be performed sequentially, moving from the physical layer up to the logical layer. The exact process depends on whether you are using traditional disk partitions or LVM (Logical Volume Management), with LVM being the more flexible method. 
+
+- The General Process
+  - 1. Add/Expand the Physical Disk Space: This is usually done at the hardware level (adding a new drive) or hypervisor level (expanding a virtual disk in VMware, AWS, etc.).
+    2. Rescan the Kernel: The Linux kernel needs to recognize the new, unallocated space.
+      - For a new disk, you might need to rescan the SCSI host: echo "- - -" > /sys/class/scsi_host/host[X]/scan.
+      - For an expanded existing disk, a simple reboot often works, or you can force a rescan: echo 1 > /sys/block/sd[X]/device/rescan.
+    3. Expand the Partition/Volume: This is where the process diverges based on your setup
+
+**_115.What is lazy umount?_**
+
+- Lazy unmount in Linux is a mechanism that allows you to immediately detach a filesystem from the system's directory hierarchy, even if it is currently "busy" (has open files or active processes using it). 
+
+**_116.What is tmpfs?_**
+
+- `tmpfs` (Temporary File System) is a type of volatile, in-memory filesystem used in Linux. It is a modern, faster alternative to the older `ramdisk` approach.
+
+**_117.What is stored in each of the following logs?_**
+- **_/var/log/messages_** -> Stores general system activity, informational messages, and non-critical errors from the kernel and various daemons on Red Hat-based systems.
+- **_/var/log/boot.log_** -> Contains a record of all events, service statuses, and console messages generated specifically during the system's boot process.
+
+**_118.True or False? both /tmp and /var/tmp cleared upon system boot_**
+
+- False. `/tmp` is cleared upon system boot while `/var/tmp` is cleared every a couple of days or not cleared at all (depends on distro).
+
+
+
+
+
+
+
