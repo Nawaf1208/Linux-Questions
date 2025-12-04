@@ -733,6 +733,46 @@ cat > new_file [enter] submit text; ctrl + d to exit insert mode`
 
 - False. `/tmp` is cleared upon system boot while `/var/tmp` is cleared every a couple of days or not cleared at all (depends on distro).
 
+## Performance Analysis
+
+**_119.How to check what is the current load average?_**
+
+- One can use `uptime` or `top`
+
+**_120.You know how to see the load average, great. but what each part of it means? for example 1.43, 2.34, 2.78_**
+
+- The Linux load average provides a snapshot of system demand and can typically be viewed using commands like `uptime`, `top`, or `htop`. It is represented by three numbers:
+
+- `load average: 1.43, 2.34, 2.78`
+
+- These three numbers represent the average number of processes that are either running or waiting to run (in a runnable state or uninterruptible sleep) over different time periods:
+
+- `Value	Time Period	      Meaning`
+- `1.43	  Last 1 minute	    The immediate system load average.`
+- `2.34	  Last 5 minutes    The intermediate system load average.`
+- `2.78	  Last 15 minutes	  The long-term system load average.`
+
+**_121.How to check process usage?_**
+
+- `pidstat`
+
+**_122.How to check disk I/O?_**
+
+- `iostat -xz 1`
+
+**_123.How to check how much free memory a system has? How to check memory consumption by each process?_**
+
+- You can use the commands `top` and `free`
+
+**_124.How to check TCP stats?_**
+
+- sar -n TCP,ETCP 1
+
+
+
+
+
+
 
 
 
