@@ -457,6 +457,82 @@
 
 - No. Containers have their own `/proc` filesystem so any change to kernel parameters inside a container, are not affecting the host or other containers running on that host.
 
+## SSH
+
+**_75.What is SSH? How to check if a Linux server is running SSH?_**
+
+- Wikipedia Definition: "SSH or Secure Shell is a cryptographic network protocol for operating network services securely over an unsecured network."
+
+- Hostinger.com Definition: "SSH, or Secure Shell, is a remote administration protocol that allows users to control and modify their remote servers over the Internet."
+
+- An SSH server will have SSH daemon running. Depends on the distribution, you should be able to check whether the service is running (e.g. `systemctl status sshd`).
+
+**_76.Why SSH is considered better than telnet?_**
+
+- Telnet also allows you to connect to a remote host but as opposed to SSH where the communication is encrypted, in telnet, the data is sent in clear text, so it doesn't considered to be secured because anyone on the network can see what exactly is sent, including passwords.
+
+**_77.What is stored in `~/.ssh/known_hosts`?_*
+
+- The file stores the key fingerprints for the clients connecting to the SSH server. This fingerprint creates a trust between the client and the server for future SSH connections.
+
+**_78.You try to ssh to a server and you get "Host key verification failed". What does it mean?_**
+
+- It means that the key of the remote host was changed and doesn't match the one that stored on the machine (in `~/.ssh/known_hosts`).
+
+**_79.What is the difference between SSH and SSL?_**
+
+- SSH (Secure Shell) and SSL (Secure Sockets Layer) are both cryptographic protocols for secure communication, but they serve fundamentally different purposes. SSH is primarily used for secure remote access and command execution, while SSL/TLS is used to secure data in transit between a website and a user's browser
+
+**_80.What `ssh-keygen` is used for?
+
+- ssh-keygen is a tool to generate an authentication key pair for SSH, that consists of a private and a public key. It supports a number of algorithms to generate authentication keys :
+  - dsa
+  - ecdsa
+  - ecdsa-sk
+  - ed25519
+  - ed25519-sk
+  - rsa (default)
+
+- One can also specify number of bits in key. Command below generates an SSH key pair with RSA 4096-bits :
+  - `$ ssh-keygen -t rsa -b 4096`
+
+- The output looks like this:
+  - Generating public/private rsa key pair.
+  - Enter file in which to save the key (/home/user/.ssh/id_rsa):
+  - Enter passphrase (empty for no passphrase):
+  - Enter same passphrase again:
+  - Your identification has been saved in /home/user/.ssh/id_rsa
+  - Your public key has been saved in /home/user/.ssh/id_rsa.pub
+  - The key fingerprint is:
+  - SHA256:f5MOGnhzYfC0ZCHvbSXXiRiNVYETjxpHcXD5xSojx+M user@mac-book-pro
+  - The key's randomart image is:
+  - `+---[RSA 4096]----+`
+  - `|        . ..+***o|`
+  - `|         o o++*o+|`
+  - `|        . =+.++++|`
+  - `|         B.oX+. .|`
+  - `|        S *=o+   |`
+  - `|       . o oE.   |`
+  - `|      . + + +    |`
+  - `|       . = + .   |`
+  - `|        .   .    |`
+  - `+----[SHA256]-----+`
+
+- One can check how many bits an SSH key has with :
+  - `$ ssh-keygen -l -f /home/user/.ssh/id_rsa`
+ 
+- Output should look like this :
+  - `4096 SHA256:f5MOGnhzYfC0ZCHvbSXXiRiNVYETjxpHcXD5xSojx+M user@mac-book-pro (RSA)`
+
+- It shows the key is RSA 4096-bits.
+
+- `-l` and `-f` parameters usage explanation :
+  - `l Show the fingerprint of the key file.`
+  - `f filename Filename of the key file.`
+ 
+**_81.What is SSH port forwarding?_**
+
+- SSH port forwarding, also known as SSH tunneling, is a powerful technique that redirects network traffic through an encrypted SSH connection. This creates a secure "tunnel" that allows you to safely transmit data, bypass firewalls, and access services that might otherwise be unavailable. 
 
 
 
