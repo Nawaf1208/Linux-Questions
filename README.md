@@ -1113,3 +1113,50 @@ Here the connection name is "System ens5". Let's say we want to modify settings 
 - `cat /etc/resolv.conf`
 - `nmcli -f ipv4.dns con show "System ens5"`
 
+## Packaging
+
+**_184.**Do you have experience with packaging? (as in building packages) Can you explain how does it works?_**
+
+- Yes, I have extensive knowledge of the packaging process in Linux. Building packages is the method of compiling an application's source code and bundling the resulting binaries, configuration files, documentation, and dependencies into a single, standardized archive file (like a .deb or .rpm) that can be easily installed, upgraded, and removed across many systems.
+
+**_185.How packages installation/removal is performed on the distribution you are using?_**
+
+- The answer depends on the distribution being used.
+- In Fedora/CentOS/RHEL/Rocky it can be done with `rpm` or `dnf` commands. In Ubuntu it can be done with the `apt` command.
+
+**_186.RPM: explain the spec format (what it should and can include)_**
+
+- The RPM Spec File is the blueprint for creating RPM packages, containing metadata (Name, Version, Release, License, Summary, Dependencies), build instructions (%prep, %build, %install), a list of all files to include in the package (%files), and optional scriptlets (%pre, %post, %preun, %postun) that execute during the installation or removal process.
+
+**_187.How do you list the content of a package without actually installing it?_**
+
+- To list the contents (the files and their installation paths) of a Linux package without actually installing it, you use the query capabilities of the package manager specific to your distribution: `rpm` for RPM-based systems or `dpkg` for Debian-based systems.
+
+**_188.How to know to which package a file on the system belongs to? Is it a problem if it doesn't belongs to any package?_**
+
+- To find the owning package for a file, you use the package manager's query function: `rpm -qf /path/to/file` (for RHEL/Fedora) or `dpkg -S /path/to/file` (for Debian/Ubuntu).
+
+- It is NOT necessarily a problem if a file doesn't belong to any package; this is normal for user-created data, logs, or manually compiled third-party software. However, it is a major security concern if critical system files (e.g., in `/usr/bin` or `/etc`) are unowned, as this can indicate a manual installation of malicious code or system tampering.
+
+**_189.Where repositories are stored? (based on the distribution you are using)_**
+
+- Linux distribution repositories are typically configured via files located in the /etc/apt/ or /etc/yum.repos.d/ directories.
+  - Debian/Ubuntu (using APT): Repository lists are primarily defined in the `/etc/apt/sources.list` file and often in individual `.list` files within the `/etc/apt/sources.list.d/` directory.
+  - RHEL/CentOS/Fedora (using DNF/YUM): Repository configurations are stored in individual `.repo` files within the `/etc/yum.repos.d/` directory (e.g., `epel.repo`).
+ 
+**_190.What is an archive? How do you create one in Linux?_**
+
+- An archive is a single file that bundles multiple other files and directories together, primarily for the purpose of data consolidation and easy portability. Archives are typically created using utilities like `tar` and often use compression algorithms (like gzip or bzip2) to reduce their size, though the archiving and compression steps are technically separate processes.
+- The basic command to create a compressed archive is:
+  - `tar -czvf archive_name.tar.gz /path/to/files/`
+
+**_191.How to extract the content of an archive?_**
+
+- `tar -xzvf archive_name.tar.gz`
+
+**_192.Why do we need package managers? Why not simply creating archives and publish them?_**
+
+- Package managers allow you to manage packages lifecycle as in installing, removing and updating the packages.
+- In addition, you can specify in a spec how a certain package will be installed - where to copy the files, which commands to run prior to the installation, post the installation, etc.
+
+
