@@ -953,8 +953,110 @@ In Linux (and Unix) the first three file descriptors are:
 
 - Encode: `echo -n "some password" | base64` Decode: `echo -n "allE19remO91" | base64`
 
+## Networking
 
+**_161.How to list all the interfaces?_**
 
+- `ip link show`
 
+**_162.What is the loopback (lo) interface?_**
 
+- The loopback interface is a special, virtual network interface that your computer uses to communicate with itself. It is used mainly for diagnostics and troubleshooting, and to connect to servers running on the local machine.
 
+**_163.What the following commands are used for?_**
+
+  - **_1.ip addr_** -> Used to display and manipulate IP addresses and their associated properties on network interfaces. It shows the current state of all interfaces (e.g., eth0, lo), their assigned IPv4 and IPv6 addresses, network masks, and hardware (MAC) addresses
+    
+  - **_2.ip route_** -> Used to display and manipulate the IP routing table. It shows how packets are directed out of the system, including the default gateway (default via), destination networks, and which network interface (dev) to use.
+  - 
+  - **_3.ip link_** -> Used to display and manipulate the state of network interfaces (Layer 2 configuration). It shows interface status (e.g., UP/DOWN), hardware (MAC) addresses, Multi-Transport Unit (MTU), and other physical/link layer properties. It is used to bring interfaces up or down.
+    
+  - **_4.ping_** -> Used to test basic network connectivity to a target host (IP address or hostname). It sends ICMP Echo Request packets and measures the time it takes to receive the Echo Reply, providing the Round Trip Time (RTT) and reporting packet loss. This confirms if the host is "alive" and reachable.
+    
+  - **_5.netstat_** -> (Short for Network Statistics) Used to display active network connections, routing tables, interface statistics, and open listening ports. It's useful for security auditing and troubleshooting to see what services are running, on which ports they are listening, and what connections are currently established. Note: On modern Linux systems, netstat is being superseded by the more performant ss command.
+    
+  - **_6.traceroute_** -> Used to trace the path that network packets take from the source host to a destination host. It works by sending packets with gradually increasing Time To Live (TTL) values and records the IP address and latency of each intermediate router, or hop, on the path. This is vital for identifying network bottlenecks or points of failure.
+
+**_164.What is a network namespace? What is it used for?_**
+
+- A network namespace is a feature of the Linux kernel that provides a virtually isolated copy of the network stack for a set of processes. This isolation includes its own network interfaces, IP address tables, routing tables, socket lists, connection tracking tables, and firewall rules. Every new Linux system starts with at least one default network namespace, known as the initial or root namespace. Any process inside a network namespace sees only the network configuration and interfaces associated with that specific namespace, making it appear as if it is running on an entirely separate host.
+
+- Network namespaces are a foundational technology for containerization (e.g., Docker, Kubernetes) and other virtualization solutions, as they allow multiple containers on a single host to run applications using the same port numbers (like port 80 or 443) without conflict, each binding to the interfaces within its own isolated environment. They are also used for network testing and development, enabling developers and administrators to create complex virtual network topologies, test routing protocols, and simulate different network conditions on a single machine without needing physical hardware or fully virtualized systems.
+
+**_165.How to check if a certain port is being used?_**
+
+- One of the following would work:
+  - `netstat -tnlp | grep <port_number>`
+  - `lsof -i -n -P | grep <port_number>`
+
+**_166.How can you turn your Linux server into a router?_**
+
+- To turn a Linux server into a router, you must configure the kernel to enable IP forwarding (or IP masquerading) so that the server can route packets between different network interfaces. This is primarily done by setting the kernel parameter `net.ipv4.ip_forward` to `1` in the `/etc/sysctl.conf` file. Additionally, you need to configure Network Address Translation (NAT) rules using the firewall (e.g., `nftables` or `iptables`) to allow devices on the private network to share the server's single external IP address when communicating with the internet.
+
+**_167.What is a virtual IP? In what situation would you use it?_**
+
+- A Virtual IP (VIP) is an IP address that is not permanently assigned to a single physical network interface but is instead shared and managed by a group of hosts. It acts as a logical identifier for a service or a cluster of servers, creating a single point of access for clients. Clients connect to the VIP, and the underlying network infrastructure or cluster software determines which physical server actually receives and handles the traffic destined for that address.
+
+- VIPs are essential in high availability (HA) and load balancing scenarios. In HA, a VIP is used to achieve failover; for instance, a master server holds the VIP, and if it fails, a heartbeat or cluster manager instantly moves (or floats) the VIP to a redundant backup server, ensuring the service remains continuously accessible to users without a change in the connection address. In load balancing, the VIP is assigned to a front-end load balancer, which then distributes incoming client connections across multiple back-end application or web servers to efficiently spread the workload and handle higher traffic volumes.
+
+**_168.True or False? The MAC address of an interface is assigned/set by the OS_**
+
+- False
+
+**_169.Can you have more than one default gateway in a given system?_**
+
+- Technically, yes.
+
+**_170.What is telnet and why is it a bad idea to use it in production? (or at all)_**
+
+- Telnet is a type of client-server protocol that can be used to open a command line on a remote computer, typically a server. By default, all the data sent and received via telnet is transmitted in clear/plain text, therefore it should not be used as it does not encrypt any data between the client and the server.
+
+**_171.What is the routing table? How do you view it?_**
+
+- The routing table is a kernel data structure used by Linux to determine the next hop (destination) for an outgoing packet. It matches a packet's destination IP against its entries to decide which gateway and local network interface to use, including a default route for all unknown destinations.
+
+- You can view the routing table using the command `ip route` (or the more verbose `ip route show`), which displays the destination network, the gateway IP, and the device (interface) associated with each entry.
+
+**_172.How can you send an HTTP request from your shell?_**
+
+- Using nc is one way
+
+**_173.What are packet sniffers? Have you used one in the past? If yes, which packet sniffers have you used and for what purpose?_**
+
+- It is a network utility that analyses and may inject tasks into the data-stream travelling over the targeted network.
+
+**_174.How to list active connections?_**
+
+- `ss -tn`
+
+**_175.How to trigger neighbor discovery in IPv6?_**
+
+- One way would be `ping6 ff02::1`
+
+**_176.What is network interface bonding and do you know how it's performed in Linux?_**
+
+- Network interface bonding (also known as NIC Teaming or link aggregation) is a Linux technique used to combine multiple physical network interfaces (like eth0 and eth1) into a single logical link, called a bond interface (e.g., bond0).
+
+- How it's Performed in Linux
+  - Bonding is implemented using the bonding kernel module and is configured via user-space tools. The high-level steps are:
+    - 1.Load the Module: Ensure the bonding kernel module is loaded (modprobe bonding).
+    - 2.Configuration Files: Create a configuration file for the new bond interface (bond0) that defines the IP address, netmask, and the bonding mode (e.g., Active-Backup, Round Robin).
+    - 3.Configure Slaves: Configure the physical interfaces (the "slave" interfaces) to be part of the bond interface and ensure they do not have their own IP addresses.
+    - 4.Networking Service Restart: Restart the networking service to bring up the bond0 interface.
+
+**_177.What network bonding modes are there?_**
+
+- There a couple of modes:
+  - balance-rr: round robing bonding
+  - active-backup: a fault tolerance mode where only one is active
+  - balance-tlb: Adaptive transmit load balancing
+  - balance-alb: Adaptive load balancing
+ 
+**_178.What is a bridge? How it's added in Linux OS?_**
+
+- A network bridge is a software device that functions like a Layer 2 network switch on a Linux server, forwarding traffic between multiple network segments (physical interfaces, virtual interfaces, or other bridges) based on MAC addresses.
+
+- It is added in Linux by using the brctl utility (from the bridge-utils package, for legacy setups) or the modern ip link command:
+  - 1.Create the bridge: `ip link add name br0 type bridge`
+  - 2.Add interfaces (ports): `ip link set eth0 master br0`
+  - 3.Bring up the bridge: `ip link set br0 up`
