@@ -471,7 +471,7 @@
 
 - Telnet also allows you to connect to a remote host but as opposed to SSH where the communication is encrypted, in telnet, the data is sent in clear text, so it doesn't considered to be secured because anyone on the network can see what exactly is sent, including passwords.
 
-**_77.What is stored in `~/.ssh/known_hosts`?_*
+**_77.What is stored in `~/.ssh/known_hosts`?_**
 
 - The file stores the key fingerprints for the clients connecting to the SSH server. This fingerprint creates a trust between the client and the server for future SSH connections.
 
@@ -846,9 +846,9 @@ cat > new_file [enter] submit text; ctrl + d to exit insert mode`
 - You can also try closing/terminating the parent process. This will make the zombie process a child of init (1) which does periodic cleanups and will at some point clean up the zombie process.
 
 **_140.How to find all the_**
-**_Processes executed/owned by a certain user_** -> `ps -u [username]`
-**_Process which are Java processes_** -> `ps -ef | grep java`
-**_Zombie Processes_** -> `ps -eAo stat,pid,comm | grep -w Z`
+- **_Processes executed/owned by a certain user_** -> `ps -u [username]`
+- **_Process which are Java processes_** -> `ps -ef | grep java`
+- **_Zombie Processes_** -> `ps -eAo stat,pid,comm | grep -w Z`
 
 **_141.What is the init process?_**
 
