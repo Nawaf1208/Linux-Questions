@@ -1298,3 +1298,59 @@ Here the connection name is "System ens5". Let's say we want to modify settings 
 
 - The user you are using isn't defined locally but originates from services like LDAP.
 - You can verify with: `getent passwd`
+
+## Hardware
+
+**_215.Where can you find information on the processor (like number of CPUs)?_**
+
+- `/proc/cpuinfo`
+
+- You can also use nproc for number of processors
+
+**_216.How can you print information on the BIOS, motherboard, processor and RAM?_**
+
+- `dmidecoode`
+
+**_217.How can you print all the information on connected block devices in your system?_**
+
+- `lsblk`
+
+**_218.True or False? In user space, applications don't have full access to hardware resources_**
+
+- True. Only in kernel space they have full access to hardware resources.
+
+## Namespaces
+
+**_219.What types of namespaces are there in Linux?_**
+
+- Process ID namespaces: these namespaces include independent set of process IDs
+- Mount namespaces: Isolation and control of mountpoints
+- Network namespaces: Isolates system networking resources such as routing table, interfaces, ARP table, etc.
+- UTS namespaces: Isolate host and domains
+- IPC namespaces: Isolates interprocess communications
+- User namespaces: Isolate user and group IDs
+- Time namespaces: Isolates time machine
+
+**_220.True or False? In every PID (Process ID) namespace the first process assigned with the process id number 1_**
+
+- True. Inside the namespace it's PID 1 while to the parent namespace the PID is a different one.
+
+**_221.True or False? In a child PID namespace all processes are aware of parent PID namespace and processes and the parent PID namespace has no visibility of child PID namespace processes_**
+
+- False. The opposite is true. Parent PID namespace is aware and has visibility of processes in child PID namespace and child PID namespace has no visibility as to what is going on in the parent PID namespace.
+
+**_222.rue or False? By default, when creating two separate network namespaces, a ping from one namespace to another will work fine_**
+
+- False. Network namespace has its own interfaces and routing table. There is no way (without creating a bridge for example) for one network namespace to reach another.
+
+**_223.True or False? With UTS namespaces, processes may appear as if they run on different hosts and domains while running on the same host_**
+
+- True
+
+**_224.True or False? It's not possible to have a root user with ID 0 in child user namespaces_**
+
+- False. In every child user namespace, it's possible to have a separate root user with uid of 0.
+
+**_225.What time namespaces are used for?_**
+
+- In time namespaces processes can use different system time.
