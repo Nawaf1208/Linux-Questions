@@ -1598,3 +1598,106 @@ Here the connection name is "System ens5". Let's say we want to modify settings 
     
   - 3.Short-Lived Processes: Many processes are starting, executing, and terminating very rapidly, causing high load but making it difficult for periodic monitoring tools to catch any single process with sustained high CPU.
  
+## Advanced Networking
+
+**_263.When you run ip a you see there is a device called 'lo'. What is it and why do we need it?_**
+
+- `lo` stands for Loopback Interface.
+
+- It is a virtual network interface that exists entirely in the operating system's software/kernel.
+
+- Why is it Needed?
+  - It is essential for:
+    - 1.Local Communication: It allows a device to communicate with itself using standard network protocols (TCP/IP) without needing any physical hardware. Any data sent to the loopback address is immediately "looped" back up the network stack.
+
+- 2.Testing/Development: It's used to test network services (like web servers, databases, or SSH daemons) and applications on the machine itself by connecting to the address 127.0.0.1 (or ::1 for IPv6, typically named localhost).
+
+- 3.Guaranteed Availability: Because it's purely software, the loopback interface is always up and available, guaranteeing a working network path for inter-process communication on the host, even when all physical network interfaces are down.
+
+**_264.What the traceroute command does? How does it works?_**
+
+- The `traceroute` command is a network diagnostic tool that displays the path (list of routers/hops) and the transit delays (latency) that data packets take to reach a specified destination host.
+
+- It's primarily used to pinpoint where connection issues, latency, or packet loss are occurring along a network route.
+
+- How It Works
+  - 1.It sends a series of probe packets (usually UDP or ICMP) to the destination, starting with TTL = 1.
+  - 2.The first router (Hop 1) receives the packet, decrements the TTL to 0, discards the packet, and sends back an ICMP "Time Exceeded" error message, revealing its IP address.
+  - 3.It repeats the process, incrementing the TTL by 1 for each subsequent set of packets (TTL = 2, TTL = 3, etc.).
+  - 4.Each increment allows the packet to travel one hop further before it expires and triggers the "Time Exceeded" message from the next router.
+  - 5.This continues until the packet finally reaches the destination, which responds with a different message, signifying the end of the trace.
+ 
+**_265.What is network bonding? What types are you familiar with?_**
+
+- Network Bonding (or NIC Teaming) is the Linux process of combining multiple physical network interfaces (NICs) into a single logical interface (e.g., bond0).
+
+- It is done to achieve:
+  - Fault Tolerance/Redundancy: If one physical link or NIC fails, traffic automatically switches to the remaining links.
+  - Load Balancing/Increased Throughput: Traffic is distributed across multiple active links, effectively increasing the available bandwidth.
+ 
+- Common Linux Bonding Modes:
+  - Mode 1 (Active-Backup): Fault Tolerance. Only one NIC is active; others are standby. Simplest and most common.
+  - Mode 0 (Balance-RR): Load Balancing. Transmits packets sequentially (Round-Robin) across all links.
+  - Mode 4 (802.3ad (LACP)): Load Balancing & Fault Tolerance. Dynamic link aggregation. Uses an industry standard protocol.
+ 
+**_266.How to link two separate network namespaces so you can ping an interface on one namespace from the second one?_**
+
+- The primary method to link two separate Linux network namespaces (`netns`) for communication is using a Virtual Ethernet (veth) pair.
+
+- A veth pair acts as a virtual cable:
+- 1.Create Pair: Use `ip link add <vethA> type veth peer name <vethB>`.
+- 2.Move Ends: Place one end of the pair into the first namespace and the other end into the second.
+  - `ip link set <vethA> netns <ns1>`
+  - `ip link set <vethB> netns <ns2>`
+- 3.Configure: Assign IP addresses on the same subnet to the interfaces within their respective namespaces and bring them up.
+  - e.g., `<vethA>` gets `10.0.0.1/24` in `ns1`, and `<vethB>` gets `10.0.0.2/24` in `ns2`.
+
+- Packets sent out of one end of the veth pair instantly arrive at the other end, enabling direct Layer 2 (Ethernet) communication and, consequently, ping (Layer 3) functionality between the two isolated namespaces.
+
+**_267.What are cgroups?_**
+
+- cgroups (Control Groups) is a Linux kernel feature that organizes processes hierarchically and allocates or limits system resources—such as CPU, memory, disk I/O, and network bandwidth—to those groups of processes.
+ 
+**_268.Explain Process Descriptor and Task Structure_**
+
+- `task_struct` (Process Descriptor) is a large data structure that contains hundreds of fields, providing the kernel with a complete picture of the process's current state and resources.
+ 
+- The Task Structure refers to the way all active task_struct entries are logically organized by the kernel. The kernel typically manages these descriptors in a doubly linked circular list to allow for quick iteration over all running processes and to facilitate process scheduling and management.
+
+**_269.What are the differences between threads and processes?_**
+
+- A Process is an isolated, heavy-weight instance of a program execution, complete with its own dedicated virtual memory space, resources, and Process ID (PID). Context switching between processes is slower due to the overhead of changing memory maps, but their isolation provides robust fault tolerance.
+
+- A Thread is a light-weight unit of execution within a process. Threads belonging to the same process share the parent process's memory space, code, and resources (like file descriptors), but maintain their own stack and registers. This sharing allows for faster creation, quicker context switching, and easier communication between threads.
+
+**_270.Explain Kernel Threads_**
+
+- Kernel Threads are special threads that run entirely in kernel space and are not tied to any specific user-space process. They are managed by the kernel and perform tasks critical to the OS.
+
+**_271.What happens when socket system call is used?_**
+
+- When the `socket()` system call is used in Linux, the following happens:
+- 1.A request is made to the kernel to create a new network endpoint.
+- 2.The kernel creates a socket data structure internally (in kernel space) which holds all necessary information (like communication domain, type, protocol, state, and buffers).
+- 3.The kernel allocates a new, unused file descriptor number for this socket structure.
+- 4.The system call returns this new file descriptor to the calling process.
+
+- This file descriptor is used by subsequent system calls (like `bind()`, `connect()`, `send()`, `recv()`) to interact with the network. Essentially, `socket()` sets up the abstract communication channel endpoint.
+
+**_272.You executed a script and while still running, it got accidentally removed. Is it possible to restore the script while it's still running?_**
+
+- It is possible to restore a script while it's still running if it has been accidentally removed. The running script process still has the code in memory. You can use the /proc filesystem to retrieve the content of the running script.
+- 1.Find the Process ID by running ``` ps aux | grep yourscriptname.sh ``` Replace yourscriptname.sh with your script name.
+- 2.Once you have the PID, you can access the script's memory through the /proc filesystem. The script will be available at /proc//fd/, where is the process ID of the running script. Typically, the script's file descriptor is 0 or 1.
+
+- You can copy the script content to a new file using the cp command:
+
+- `cp /proc/<PID>/fd/0 /path_to_restore_your_file/yourscriptname.sh`
+
+- Replace with the actual PID of the script and
+- `/path_to_restore_your_file/yourscriptname.sh` with the path where you want to restore the script.
+
+
+
+
+
