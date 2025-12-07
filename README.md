@@ -1697,7 +1697,47 @@ Here the connection name is "System ens5". Let's say we want to modify settings 
 - Replace with the actual PID of the script and
 - `/path_to_restore_your_file/yourscriptname.sh` with the path where you want to restore the script.
 
+**_273.What is the difference between MemFree and MemAvailable in /proc/meminfo?_**
 
+- MemFree - The amount of unused physical RAM in your system
+- MemAvailable - The amount of available memory for new workloads (without pushing system to use swap) based on MemFree, Active(file), Inactive(file), and SReclaimable.
 
+**_274.What is the difference between paging and swapping?_**
 
+- Paging is a fundamental technique used in modern Linux Virtual Memory systems. It involves moving small, fixed-size chunks of a process's address space, called pages (typically 4KB), between RAM and disk (specifically, the swap space). Paging is frequent and enables Demand Paging, where only the necessary pages are loaded into memory, allowing a program to run even if only part of it is in RAM.
 
+- Swapping (in its traditional sense) refers to moving the entire address space of an inactive process out of RAM and onto the disk to free up a large contiguous block of memory. This operation is much slower and less granular than paging. While the term "swapping" is still often used informally to describe moving pages to the swap space, modern Linux kernels primarily use paging mechanisms for virtual memory management, rarely performing full process swaps.
+
+**_275.Explain what is OOM killer._**
+
+- The OOM (Out-Of-Memory) Killer is a Linux kernel component designed to gracefully recover the system when physical memory (RAM) is exhausted.
+
+- When the system runs out of memory and cannot satisfy new allocation requests, the OOM Killer steps in to:
+
+- 1.Select a "Victim": It uses a heuristic scoring algorithm to select the process that will cause the least damage and free the most memory. Processes with lower priority, large memory usage, and those that have recently increased their memory consumption are often targeted.
+- 2.Terminate: It forcibly kills the selected process (or processes) to immediately reclaim their memory and allow the system to continue operating, preventing a full crash or deadlock.
+
+- This behavior is a defensive mechanism, prioritizing system stability over individual application uptime. Processes can be configured to resist the OOM killer using the `oom_score_adj` setting.
+
+## Distributions
+
+**_276.What is a Linux distribution?_**
+
+- A Linux Distribution (Distro) is a complete, ready-to-use version of the Linux operating system.
+
+- It consists of the Linux kernel combined with an extensive collection of GNU utilities (like the shell, file tools), system software (like `systemd`), libraries, and usually an installer, a package manager (like `apt` or `dnf`), and a specific set of desktop environments or applications.
+
+**_277.What linux distributions are you familiar with?_**
+
+- Some of the most well-known distributions I can discuss include:
+  - Enterprise/Stability: Red Hat Enterprise Linux (RHEL), CentOS, Oracle Linux, and Debian.
+  - User-Friendly/Desktop: Ubuntu, Fedora, Linux Mint, and Manjaro.
+  - Security/Specialized: Kali Linux, Tails, and Alpine.
+  - Minimal/Containerized: Alpine and CoreOS/Fedora CoreOS.
+ 
+**_278.What are the components of a Linux distribution?_**
+
+- Kernel
+- Utilities
+- Services
+- Software/Packages Management
