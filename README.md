@@ -1556,3 +1556,45 @@ Here the connection name is "System ens5". Let's say we want to modify settings 
 
 - The shell figures out, using the PATH variable, where the executable of the command resides in the filesystem. It then calls `fork()` to create a new child process for running the command. Once the fork was executed successfully, it calls a variant of `exec()` to execute the command and finally, waits the command to finish using `wait()`. When the child completes, the shell returns from `wait()` and prints out the prompt again.
 
+## Filesystem & Files
+
+**_257.How to create a file of a certain size?_**
+
+- There are a couple of ways to do that:
+  - dd if=/dev/urandom of=new_file.txt bs=2MB count=1
+  - truncate -s 2M new_file.txt
+  - fallocate -l 2097152 new_file.txt
+ 
+**_258.What does the following block do?:_**
+- **_`open("/my/file") = 5`_**
+- **_`read(5, "file content")`_**
+
+- These system calls are reading the file `/my/file` and 5 is the file descriptor number.
+
+**_259.Describe three different ways to remove a file (or its content)_**
+
+- `rm filename`: Removes the file (inode and data blocks) from the filesystem entirely. This is the standard, permanent deletion command.
+  
+- `truncate -s 0 filename`: Removes the content of the file (sets its size to 0 bytes) while keeping the file and its metadata (inode) intact.
+  
+- `> filename` (Shell redirection): Removes the content of the file (truncates it) by redirecting null output into it. Similar to `truncate -s 0`, it keeps the file and its metadata.
+
+**_260.What is the difference between a process and a thread?_**
+
+- A Process is an independent, heavyweight execution of a program with its own dedicated, isolated virtual memory address space and resources (file descriptors, process ID - PID).
+
+- A Thread is a lightweight unit of execution within a process. Threads belonging to the same process share the process's memory space (code, data, and heap) and resources, but each has its own independent stack, registers, and Thread ID (LWP in Linux).
+
+**_261.What is context switch?_**
+
+- From wikipedia: a context switch is the process of storing the state of a process or thread, so that it can be restored and resume execution at a later point.
+
+**_262.You found there is a server with high CPU load but you didn't find a process with high CPU. How is that possible?_**
+
+- This is possible due to Interrupt Handling (IRQs) or Kernel Activity:
+  - 1.Interrupt Overload: A device (like a network card or storage controller) is generating a massive number of interrupts (IRQs). The CPU spends significant time executing the Kernel's interrupt handlers to service these events. Tools like top or ps report this time under the si (software interrupts) or ni (hardware interrupts) CPU usage fields, but it's not attributed to a specific user-space process.
+    
+  - 2.Kernel Threads/Activity: The Kernel itself is busy with tasks (e.g., memory management, heavy I/O handling, scheduling) performed by kernel threads or core kernel routines. While some tools show this as sy (system time), it may not appear under a normal user-space process list.
+    
+  - 3.Short-Lived Processes: Many processes are starting, executing, and terminating very rapidly, causing high load but making it difficult for periodic monitoring tools to catch any single process with sustained high CPU.
+ 
